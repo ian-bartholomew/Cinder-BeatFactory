@@ -13,7 +13,13 @@ BeatFactoryRef BeatFactory::create(){
     
 }
 
-BeatFactory::BeatFactory(){}
+BeatFactory::BeatFactory()
+{
+    mOdfType = onsetsds_odf_types::ODS_ODF_MAGSUM;
+    mFftType = onsetsds_fft_types::ODS_FFT_SC3_POLAR;
+    mMedianSpan = 11;
+    mSampleRate = 44100.0f;
+}
 
 BeatFactory::~BeatFactory()
 {
@@ -29,7 +35,6 @@ void BeatFactory::loadAudio(DataSourceRef dataSource)
 void BeatFactory::setup()
 {
     initTrack();
-    initODF();
 }
 
 void BeatFactory::update()
@@ -48,7 +53,8 @@ void BeatFactory::update()
 				// Initialize analyzer
 				if ( !mFft ) {
 					mFft = Kiss::create( sampleCount );
-				}
+                    initODF( sampleCount );
+				}                
                 
 				// Analyze data
 				if ( mBuffer->getInterleavedData()->mData != 0 ) {
@@ -88,11 +94,13 @@ void BeatFactory::update()
 	}
 }
 
+// get the average amplitude
 float BeatFactory::getAmp()
 {
     return mAmp;
 }
 
+// get the energy level
 float BeatFactory::getInstant()
 {
     return mInstant;
@@ -115,7 +123,7 @@ void BeatFactory::stop()
 
 void BeatFactory::destroy()
 {
-    
+    // not sure anything is needed here quite yet...
 }
 
 void BeatFactory::initTrack()
@@ -125,17 +133,17 @@ void BeatFactory::initTrack()
 	mTrack->play();
 }
 
-void BeatFactory::initODF(){
+void BeatFactory::initODF(uint32_t fftSize){
     // There are various types of onset detector available, we must choose one
     //    onsetsds_odf_types odftype = onsetsds_odf_types::ODS_ODF_WPHASE;  // good for bass and low end
-    onsetsds_odf_types odftype = onsetsds_odf_types::ODS_ODF_MAGSUM;
+    onsetsds_odf_types odftype = mOdfType;
     
     // Allocate contiguous memory using malloc or whatever is reasonable.
     // FFT size of 1024 (@44.1kHz), and a median span of 11.
-    float* odsdata = (float*) malloc( onsetsds_memneeded(odftype, 1024, 11) );
+    float* odsdata = (float*) malloc( onsetsds_memneeded(odftype, fftSize, mMedianSpan) );
     
     // Now initialise the OnsetsDS struct and its associated memory
-    onsetsds_init(&mOds, odsdata, onsetsds_fft_types::ODS_FFT_SC3_POLAR, odftype, 1024, 11, 44100.0f);
+    onsetsds_init(&mOds, odsdata, mFftType, odftype, fftSize, mMedianSpan, mSampleRate);
     
     // start our timer for the damper
     mTimer = currentTimeInMillis();

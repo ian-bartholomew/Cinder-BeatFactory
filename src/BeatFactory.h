@@ -45,7 +45,7 @@ class BeatFactory {
     
     // inits
     void initTrack();
-    void initODF();
+    void initODF(uint32_t fftSize);
     
     long currentTimeInMillis();
     
@@ -62,4 +62,8 @@ class BeatFactory {
     
     // Onset Dection
     OnsetsDS                    mOds;
+    onsetsds_odf_types          mOdfType;
+    onsetsds_fft_types          mFftType;
+    uint16_t                    mMedianSpan;
+    float                       mSampleRate;
 };
