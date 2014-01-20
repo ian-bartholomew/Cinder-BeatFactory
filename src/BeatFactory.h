@@ -29,8 +29,12 @@ class BeatFactory {
     void loadAudio(DataSourceRef dataSource);
     void setup();
     void update();
-    bool isOnset();
     void stop();
+    
+    float getAmp();
+    float getInstant();
+    bool isOnset();
+    
     
     KissRef             mFft;
     
@@ -51,7 +55,7 @@ class BeatFactory {
 	ci::audio::TrackRef			mTrack;
 
     long                        mTimer;
-    double                      mAmp;
+    float                       mAmp;
     float                       mInstant;
     
     bool                        bIsOnset     = false;

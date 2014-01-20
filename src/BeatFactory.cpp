@@ -88,6 +88,16 @@ void BeatFactory::update()
 	}
 }
 
+float BeatFactory::getAmp()
+{
+    return mAmp;
+}
+
+float BeatFactory::getInstant()
+{
+    return mInstant;
+}
+
 bool BeatFactory::isOnset()
 {
     return bIsOnset;
