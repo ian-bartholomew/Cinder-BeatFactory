@@ -40,7 +40,7 @@ void BeatFactory::setup()
 void BeatFactory::update()
 {
     // Check if track is playing and has a PCM buffer available
-	if ( mTrack->isPlaying() && mTrack->isPcmBuffering() ) {
+	if ( isTrackPlaying() ) {
         
 		// Get buffer
 		mBuffer = mTrack->getPcmBuffer();
@@ -53,6 +53,7 @@ void BeatFactory::update()
 				// Initialize analyzer
 				if ( !mFft ) {
 					mFft = Kiss::create( sampleCount );
+                    bHasFFTData = true;
                     initODF( sampleCount );
 				}                
                 
@@ -92,6 +93,26 @@ void BeatFactory::update()
 		}
         
 	}
+}
+
+bool BeatFactory::isTrackPlaying()
+{
+    return mTrack->isPlaying() && mTrack->isPcmBuffering();
+}
+
+bool BeatFactory::hasFFTData()
+{
+    return bHasFFTData;
+}
+
+float * BeatFactory::getFftData()
+{
+    return mFft->getData();
+}
+
+int32_t BeatFactory::getDataSize()
+{
+    return mFft->getDataSize();
 }
 
 // get the average amplitude

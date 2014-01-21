@@ -31,10 +31,13 @@ class BeatFactory {
     void update();
     void stop();
     
+    bool isTrackPlaying();
+    bool hasFFTData();
     float getAmp();
     float getInstant();
     bool isOnset();
-    
+    float * getFftData();
+    int32_t getDataSize();
     
     KissRef             mFft;
     
@@ -58,6 +61,7 @@ class BeatFactory {
     float                       mAmp;
     float                       mInstant;
     
+    bool                        bHasFFTData  = false;
     bool                        bIsOnset     = false;
     
     // Onset Dection
